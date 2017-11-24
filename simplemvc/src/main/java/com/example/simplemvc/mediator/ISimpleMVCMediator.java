@@ -1,7 +1,7 @@
 package com.example.simplemvc.mediator;
 
-public interface ISimpleMVCMediator extends IMediator {
+import com.example.simplemvc.model.Simple;
 
-	String consultSimple();
+public interface ISimpleMVCMediator extends ICRUDMediator<Simple, Integer> {
 
 }

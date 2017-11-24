@@ -1,24 +1,35 @@
 package com.example.simplemvc.controller;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-public interface ISimpleController<T> {
+public interface ISimpleController<T, ID extends Serializable> {
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	T create(T entity);
+	T create(@RequestBody T json);
 
-	@RequestMapping(method = RequestMethod.PUT)
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
-	T update(T entity);
+	T update(@PathVariable ID id, T json);
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
-	void delete(Serializable id);
+	void delete(@PathVariable ID id);
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	@ResponseStatus(value = HttpStatus.OK)
+	T findOne(@PathVariable ID id);
+
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseStatus(value = HttpStatus.OK)
+	List<T> listAll();
 
 }

@@ -3,23 +3,18 @@ package com.example.simplemvc.mediator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.simplemvc.dao.IDAO;
-import com.example.simplemvc.dao.ISimpleMVCDAO;
+import com.example.simplemvc.dao.ICRUDDAO;
+import com.example.simplemvc.dao.SimpleMVCDAO;
+import com.example.simplemvc.model.Simple;
 
 @Service
-public class SimpleMVCMediator implements ISimpleMVCMediator {
+public class SimpleMVCMediator extends AbstractCRUDMediator<Simple, Integer> implements ISimpleMVCMediator {
 
 	@Autowired
-	private ISimpleMVCDAO simpleMVCDAO;
+	private SimpleMVCDAO simpleMVCDAO;
 
 	@Override
-	public String consultSimple() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IDAO getDAO() {
+	protected ICRUDDAO<Simple, Integer> getDAO() {
 		return this.simpleMVCDAO;
 	}
 

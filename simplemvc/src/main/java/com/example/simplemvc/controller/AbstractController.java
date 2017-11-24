@@ -1,31 +1,40 @@
 package com.example.simplemvc.controller;
 
 import java.io.Serializable;
+import java.util.List;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.example.simplemvc.mediator.IMediator;
+import com.example.simplemvc.mediator.ICRUDMediator;
 
-public abstract class AbstractController<T> implements ISimpleController<T> {
+public abstract class AbstractController<T, ID extends Serializable> implements ISimpleController<T, ID> {
 
 	@Override
-	public T create(@RequestBody T entity) {
-		// TODO Auto-generated method stub
-		return null;
+	public T create(@RequestBody T json) {
+		return getCRUDMediator().create(json);
 	}
 
 	@Override
-	public T update(@RequestBody T entity) {
-		// TODO Auto-generated method stub
-		return null;
+	public T update(@PathVariable ID id, @RequestBody T json) {
+		return getCRUDMediator().update(id, json);
 	}
 
 	@Override
-	public void delete(Serializable id) {
-		// TODO Auto-generated method stub
-
+	public void delete(@PathVariable ID id) {
+		getCRUDMediator().delete(id);
 	}
 
-	public abstract IMediator getMediator();
+	@Override
+	public T findOne(@PathVariable ID id) {
+		return getCRUDMediator().findOne(id);
+	}
+
+	@Override
+	public List<T> listAll() {
+		return getCRUDMediator().listAll();
+	}
+
+	public abstract ICRUDMediator<T, ID> getCRUDMediator();
 
 }

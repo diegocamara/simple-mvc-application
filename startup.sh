@@ -1,3 +1,3 @@
 #!/bin/bash
 apache2ctl start
-java -jar /simplemvc.jar
+# java -jar /simplemvc.jar

@@ -1,3 +1,4 @@
 #!/bin/bash
-apache2ctl start
-# java -jar /simplemvc.jar
+# apache2ctl start
+sh /opt/tomcat/bin/startup.sh
+exec "$@"

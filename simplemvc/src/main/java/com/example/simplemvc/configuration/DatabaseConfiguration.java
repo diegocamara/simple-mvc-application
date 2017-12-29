@@ -1,21 +1,14 @@
 package com.example.simplemvc.configuration;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.example.simplemvc.annotation.ExcludeFromTests;
-import com.example.simplemvc.model.Simple;
 
 @Configuration
 @EnableTransactionManagement
 @ExcludeFromTests
 public class DatabaseConfiguration {
-
-	@Bean
-	public Simple simple() {
-		return new Simple();
-	}
 
 	// private static final String SCHEMA_SPLIT_REGEX = ",";
 	//

@@ -1,2 +1,0 @@
-FROM tomcat:8.0
-EXPOSE 8009 8080

@@ -1,6 +1,7 @@
 package com.example.simplemvc.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.simplemvc.mediator.ICRUDMediator;
@@ -12,6 +13,11 @@ public class SimpleMVCController extends AbstractController<Simple, Integer> imp
 
 	@Autowired
 	private ISimpleMVCMediator simpleMVCMediator;
+
+	@GetMapping(value = "/testing")
+	public String testing() {
+		return "testing";
+	}
 
 	@Override
 	public ICRUDMediator<Simple, Integer> getCRUDMediator() {

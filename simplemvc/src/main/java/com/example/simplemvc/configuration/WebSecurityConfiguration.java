@@ -26,13 +26,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		auth.inMemoryAuthentication().withUser("john").password("123").roles("USER").and().withUser("tom")
 				.password("111").roles("ADMIN").and().withUser("user1").password("pass").roles("USER").and()
 				.withUser("admin").password("nimda").roles("ADMIN");
+
 	}// @formatter:on
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
+		// @formatter:off
 		http.authorizeRequests().antMatchers("/login").permitAll().antMatchers("/oauth/token/revokeById/**").permitAll()
-				.and().formLogin().permitAll().and().csrf().disable();
+				.antMatchers("/tokens/**").permitAll().anyRequest().authenticated().and().formLogin().permitAll().and()
+				.csrf().disable();
+		// @formatter:on
 
 	}
 

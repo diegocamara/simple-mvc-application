@@ -3,6 +3,7 @@ package com.example.simplemvc.configuration;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -28,7 +30,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 	@Value("${frontend.application.clientid}")
 	private String frontendApplicationClientID;
 
-	@Value("${frontend.application.clientid}")
+	@Value("${frontend.application.authorized-grant-types}")
 	private String frontendApplicationAuthorizedGrantTypes;
 
 	@Value("${frontend.application.scopes}")
@@ -44,6 +46,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 	private String jwtSignkey;
 
 	@Autowired
+	@Qualifier("authenticationManagerBean")
 	private AuthenticationManager authenticationManager;
 
 	@Override
@@ -67,8 +70,9 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+
 		final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(accessTokenConverter()));
+		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
 		endpoints.tokenStore(tokenStore()).tokenEnhancer(tokenEnhancerChain)
 				.authenticationManager(authenticationManager);
 	}
@@ -98,10 +102,10 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		return converter;
 	}
 
-	// @Bean
-	// public TokenEnhancer tokenEnhancer() {
-	// return new CustomTokenEnhancer();
-	// }
+	@Bean
+	public TokenEnhancer tokenEnhancer() {
+		return new CustomTokenEnhancer();
+	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {

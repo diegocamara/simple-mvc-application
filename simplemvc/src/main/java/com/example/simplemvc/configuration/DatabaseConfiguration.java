@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.example.simplemvc.annotation.ExcludeFromTests;
 
-@Configuration
-@EnableTransactionManagement
-@ExcludeFromTests
+//@Configuration
+//@EnableTransactionManagement
+//@ExcludeFromTests
 public class DatabaseConfiguration {
 
 	private static final String SCHEMA_SPLIT_REGEX = ",";

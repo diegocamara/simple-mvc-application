@@ -16,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Order(1)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -49,35 +48,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-
-		// http
-		// // we don't need CSRF because our token is invulnerable
-		// .csrf().disable()
-		// // All urls must be authenticated (filter for token always fires (/api/**)
-		// .authorizeRequests().antMatchers("/api/**").authenticated().and()
-		// // Call our errorHandler if authentication/authorisation fails
-		//// .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
-		// // don't create session (REST)
-		// .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		//
-		// // Custom JWT based security filter
-		// http.addFilterBefore(authenticationTokenFilterBean(),
-		// UsernamePasswordAuthenticationFilter.class);
-		//
-		// // disable page caching
-		// http.headers().cacheControl();
-		//
-		// http.formLogin();
-
-		http.formLogin().successHandler(formAuthenticationSucessHandler).and().httpBasic().disable().anonymous()
-				.disable().authorizeRequests().anyRequest().authenticated();
-
-		http.csrf().disable();
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
-		// http.authorizeRequests().antMatchers("/auth/**").permitAll().anyRequest().authenticated().and().formLogin()
-		// .loginPage("/login").permitAll();
-		// http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
+				.antMatchers("/login", "/simple/testing").permitAll().anyRequest().authenticated().and().formLogin()
+				.and().csrf().disable();
 
 	}
 

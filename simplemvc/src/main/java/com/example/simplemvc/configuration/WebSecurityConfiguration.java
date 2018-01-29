@@ -1,23 +1,41 @@
 package com.example.simplemvc.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@Order(1)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	private EntryPointUnauthorizedHandler authenticationEntryPoint;
+
+	@Autowired
+	private FormAuthenticationSucessHandler formAuthenticationSucessHandler;
 
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
+	}
+
+	@Bean
+	public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
+		AuthenticationTokenFilter authenticationTokenFilter = new AuthenticationTokenFilter();
+		authenticationTokenFilter.setAuthenticationManager(super.authenticationManagerBean());
+		return authenticationTokenFilter;
 	}
 
 	@Autowired
@@ -32,11 +50,34 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		// @formatter:off
-		http.authorizeRequests().antMatchers("/login").permitAll().antMatchers("/oauth/token/revokeById/**").permitAll()
-				.antMatchers("/tokens/**").permitAll().anyRequest().authenticated().and().formLogin().permitAll().and()
-				.csrf().disable();
-		// @formatter:on
+		// http
+		// // we don't need CSRF because our token is invulnerable
+		// .csrf().disable()
+		// // All urls must be authenticated (filter for token always fires (/api/**)
+		// .authorizeRequests().antMatchers("/api/**").authenticated().and()
+		// // Call our errorHandler if authentication/authorisation fails
+		//// .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
+		// // don't create session (REST)
+		// .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		//
+		// // Custom JWT based security filter
+		// http.addFilterBefore(authenticationTokenFilterBean(),
+		// UsernamePasswordAuthenticationFilter.class);
+		//
+		// // disable page caching
+		// http.headers().cacheControl();
+		//
+		// http.formLogin();
+
+		http.formLogin().successHandler(formAuthenticationSucessHandler).and().httpBasic().disable().anonymous()
+				.disable().authorizeRequests().anyRequest().authenticated();
+
+		http.csrf().disable();
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+		// http.authorizeRequests().antMatchers("/auth/**").permitAll().anyRequest().authenticated().and().formLogin()
+		// .loginPage("/login").permitAll();
+		// http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 
 	}
 

@@ -1,5 +1,6 @@
 package com.example.simplemvc.mediator;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,6 +12,7 @@ import com.example.simplemvc.dao.UserDAO;
 @Service
 public class UserMediator implements UserDetailsService {
 
+	@Autowired
 	private UserDAO userDAO;
 
 	@Override

@@ -11,7 +11,7 @@ public class UserDAO extends AbstractHibernateDAO<User, Long> {
 
 	public UserDetails consultByUsername(String username) {
 		Criteria criteria = createCriteria();
-		return (UserDetails) criteria.uniqueResult();
+		return (User) criteria.uniqueResult();
 	}
 
 }

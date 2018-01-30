@@ -1,5 +1,6 @@
 package com.example.simplemvc.jwt;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -36,13 +37,14 @@ public class JwtUtil {
 		return user;
 	}
 
-	public static String getToken(String jwtSecretKey, TokenTO tokenTO) {
+	public static String getToken(String jwtSecretKey, TokenTO tokenTO) throws UnsupportedEncodingException {
 		// @formatter:off
 		return Jwts.builder().setSubject(tokenTO.getSubject()).setExpiration(tokenTO.getExpirationDate())
 				.setIssuer(AUTH_SERVICE_JWT).setIssuedAt(new Date()).setNotBefore(new Date())
 				.claim("roles", tokenTO.getRoles()).claim("clientIP", tokenTO.getClientIpAddress())
 				.claim("browserFingerprintDigest", tokenTO.getBrowserFingerprintDigest())
-				.setHeaderParams(tokenTO.getHeaderClaims()).signWith(SignatureAlgorithm.HS256, jwtSecretKey).compact();
+				.setHeaderParams(tokenTO.getHeaderClaims())
+				.signWith(SignatureAlgorithm.HS256, jwtSecretKey.getBytes("UTF-8")).compact();
 		// @formatter:on
 	}
 

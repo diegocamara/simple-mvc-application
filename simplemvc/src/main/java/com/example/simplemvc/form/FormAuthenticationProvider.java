@@ -7,26 +7,30 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-
-import com.example.simplemvc.mediator.UserMediator;
 
 @Component
 public class FormAuthenticationProvider implements AuthenticationProvider {
 
 	@Autowired
-	private UserMediator userDetailsService;
+	private UserDetailsService userDetailsService;
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		String username = (String) authentication.getPrincipal();
 		String password = (String) authentication.getCredentials();
 
-		UserDetails user = userDetailsService.loadUserByUsername(username);
-		if (!password.equals(user.getPassword())) {
-			throw new AuthenticationCredentialsNotFoundException("Credentials don't match");
-		}
-		return new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
+		// UserDetails user = userDetailsService.loadUserByUsername(username);
+		// if (user == null || !password.equals(user.getPassword())) {
+		// throw new AuthenticationCredentialsNotFoundException("Credentials don't
+		// match");
+		// }
+
+		// return new UsernamePasswordAuthenticationToken(user.getUsername(),
+		// user.getPassword(), user.getAuthorities());
+
+		return new UsernamePasswordAuthenticationToken(username, password, null);
 	}
 
 	@Override

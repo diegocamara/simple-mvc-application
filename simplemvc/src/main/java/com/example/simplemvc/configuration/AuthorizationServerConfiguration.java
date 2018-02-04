@@ -30,6 +30,9 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 	@Value("${frontend.application.clientid}")
 	private String frontendApplicationClientID;
 
+	@Value("${frontend.application.password}")
+	private String frontendApplicationPassword;
+
 	@Value("${frontend.application.authorized-grant-types}")
 	private String frontendApplicationAuthorizedGrantTypes;
 
@@ -41,6 +44,9 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
 	@Value("${frontend.application.accessTokenValiditySeconds}")
 	private int frontendApplicationAccessTokenValiditySeconds;
+
+	@Value("${frontend.application.resource-id}")
+	private String frontendApplicationRecourceId;
 
 	@Value("${jwt.signkey}")
 	private String jwtSignkey;
@@ -56,21 +62,20 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory().withClient(frontendApplicationClientID)
-				.authorizedGrantTypes(frontendApplicationAuthorizedGrantTypes).scopes(getSplitScopes())
-				.autoApprove(frontendApplicationAutoAprove)
+		clients.inMemory().withClient(frontendApplicationClientID).secret(frontendApplicationPassword)
+				.authorizedGrantTypes(getSplitTrimValues(",", frontendApplicationAuthorizedGrantTypes))
+				.scopes(getSplitTrimValues(",", frontendApplicationScopes)).resourceIds(frontendApplicationRecourceId)
 				.accessTokenValiditySeconds(frontendApplicationAccessTokenValiditySeconds);
 	}
 
-	private String[] getSplitScopes() {
-		return Arrays.asList(frontendApplicationScopes.split(",")).stream().map(scope -> {
-			return scope.trim();
+	private String[] getSplitTrimValues(String saparator, String values) {
+		return Arrays.asList(values.split(saparator)).stream().map(value -> {
+			return value.trim();
 		}).toArray(size -> new String[size]);
 	}
 
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-
 		final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
 		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
 		endpoints.tokenStore(tokenStore()).tokenEnhancer(tokenEnhancerChain)
@@ -95,10 +100,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 	public JwtAccessTokenConverter accessTokenConverter() {
 		final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
 		converter.setSigningKey(jwtSignkey);
-		// final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new
-		// ClassPathResource("mytest.jks"),
-		// "mypass".toCharArray());
-		// converter.setKeyPair(keyStoreKeyFactory.getKeyPair("mytest"));
 		return converter;
 	}
 

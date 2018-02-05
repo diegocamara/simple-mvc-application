@@ -9,7 +9,7 @@ import com.example.simplemvc.mediator.ISimpleMVCMediator;
 import com.example.simplemvc.model.Simple;
 
 @RestController
-public class SimpleMVCController extends AbstractController<Simple, Integer> implements ISimpleMVCController {
+public class SimpleMVCController extends AbstractRestController<Simple, Integer> implements ISimpleMVCController {
 
 	@Autowired
 	private ISimpleMVCMediator simpleMVCMediator;

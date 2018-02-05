@@ -30,9 +30,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 	@Value("${frontend.application.clientid}")
 	private String frontendApplicationClientID;
 
-	@Value("${frontend.application.password}")
-	private String frontendApplicationPassword;
-
 	@Value("${frontend.application.authorized-grant-types}")
 	private String frontendApplicationAuthorizedGrantTypes;
 
@@ -62,7 +59,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory().withClient(frontendApplicationClientID).secret(frontendApplicationPassword)
+		clients.inMemory().withClient(frontendApplicationClientID)
 				.authorizedGrantTypes(getSplitTrimValues(",", frontendApplicationAuthorizedGrantTypes))
 				.scopes(getSplitTrimValues(",", frontendApplicationScopes)).resourceIds(frontendApplicationRecourceId)
 				.accessTokenValiditySeconds(frontendApplicationAccessTokenValiditySeconds);

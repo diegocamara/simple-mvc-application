@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.simplemvc.mediator.ICRUDMediator;
 
-public abstract class AbstractController<T, ID extends Serializable> implements ISimpleController<T, ID> {
+public abstract class AbstractRestController<T, ID extends Serializable> implements IBasicRestController<T, ID> {
 
 	@Override
 	public T create(@RequestBody T json) {

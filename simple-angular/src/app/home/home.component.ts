@@ -17,8 +17,8 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
   }
 
-  login() {
-    this.oauthService.initImplicitFlow();
-  }
+  // login() {
+  //   this.oauthService.initImplicitFlow();
+  // }
 
 }

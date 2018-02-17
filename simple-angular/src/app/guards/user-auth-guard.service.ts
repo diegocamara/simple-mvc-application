@@ -15,7 +15,7 @@ export class UserAuthGuard implements CanActivate {
     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        console.log(this.oauthService.getAccessToken());
+        
         if (tokenNotExpired(TOKEN_NAME, this.oauthService.getAccessToken())) {
             return true;
         } else {

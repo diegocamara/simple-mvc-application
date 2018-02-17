@@ -62,7 +62,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 		clients.inMemory().withClient(frontendApplicationClientID)
 				.authorizedGrantTypes(getSplitTrimValues(",", frontendApplicationAuthorizedGrantTypes))
 				.scopes(getSplitTrimValues(",", frontendApplicationScopes)).resourceIds(frontendApplicationRecourceId)
-				.accessTokenValiditySeconds(frontendApplicationAccessTokenValiditySeconds);
+				.accessTokenValiditySeconds(frontendApplicationAccessTokenValiditySeconds)
+				.autoApprove(frontendApplicationAutoAprove);
 	}
 
 	private String[] getSplitTrimValues(String saparator, String values) {

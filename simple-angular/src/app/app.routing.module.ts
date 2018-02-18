@@ -1,3 +1,4 @@
+import { SigninComponent } from './signin/signin.component';
 import { UserAuthGuard } from './guards/user-auth-guard.service';
 import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
@@ -5,6 +6,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const appRoutes: Routes = [
+    {
+        path: 'signin',
+        component: SigninComponent
+    },
     {
         path: 'home',
         canActivate: [UserAuthGuard],
@@ -32,4 +37,4 @@ const appRoutes: Routes = [
 export class AppRoutingModule {
 }
 
-export const routedComponents = [HomeComponent, PageNotFoundComponent];
+export const routedComponents = [HomeComponent, SigninComponent, PageNotFoundComponent];

@@ -24,19 +24,11 @@ export class AppComponent {
     this.oauthService.configure(authConfig);
     this.oauthService.tokenValidationHandler = new JwksValidationHandler();
     this.oauthService.tryLogin();
-    this.oauthService.setupAutomaticSilentRefresh();
-    this
-    .oauthService
-    .silentRefresh()
-    .then(info => console.debug('refresh ok', info))
-    .catch(err => console.error('refresh error', err));
   }
 
   logout() {
-    this.http.post('http://localhost:8080/logout', { }).subscribe((response) => {
-      this.oauthService.logOut();
-      this.router.navigate(['/signin']);
-    });
+    this.oauthService.logOut();
+    this.router.navigate(['/signin']);
   }
 
   isLoggedIn() {

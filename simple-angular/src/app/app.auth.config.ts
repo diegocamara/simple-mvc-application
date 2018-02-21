@@ -7,7 +7,8 @@ export const authConfig: AuthConfig = {
     redirectUri: 'http://localhost:4200',
     loginUrl: 'http://localhost:8080/oauth/authorize',
     logoutUrl: 'http://localhost:8080/logout',    
-    clientId: 'sampleClientId',
+    clientId: 'sampleClientId',    
+    timeoutFactor: 5,
     scope: 'read write',    
     oidc: false,
     showDebugInformation: true

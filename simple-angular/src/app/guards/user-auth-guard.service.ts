@@ -20,7 +20,7 @@ export class UserAuthGuard implements CanActivate {
         if (tokenNotExpired(TOKEN_NAME, this.oauthService.getAccessToken())) {
             return true;
         } else {
-            // this.oauthService.logOut();
+            this.oauthService.logOut();
             this.router.navigate(['signin'], { queryParams: { redirectTo: state.url } });
             return false;
         }

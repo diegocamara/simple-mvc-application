@@ -13,6 +13,6 @@ export const authConfig: AuthConfig = {
     showDebugInformation: true,
     // silent refresh config
     silentRefreshRedirectUri: window.location.origin + '/silent-refresh1.html',
-    timeoutFactor: 0.5, // between 0 and 1 - silent refresh event is fired when token lifetime is over 50%.
+    timeoutFactor: 0.8, // between 0 and 1 - silent refresh event is fired when token lifetime is over 50%.
     silentRefreshTimeout: 30.000, // milliseconds
 }

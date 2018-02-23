@@ -11,6 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -19,11 +20,14 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsFilter implements Filter {
 
+	@Value("${app.access.control.allow.origin}")
+	private String appAccessControlAllowOrigin;
+
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
 		final HttpServletResponse response = (HttpServletResponse) res;
-		response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+		response.setHeader("Access-Control-Allow-Origin", appAccessControlAllowOrigin);
 		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
 		response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");

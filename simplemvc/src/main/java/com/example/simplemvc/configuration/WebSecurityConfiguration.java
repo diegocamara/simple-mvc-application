@@ -45,8 +45,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		// http.headers().addHeaderWriter(new XFrameOptionsHeaderWriter(
 		// new WhiteListedAllowFromStrategy(Arrays.asList("http://localhost:4200"))));
 		// http.headers().frameOptions().disable();
-		http.authorizeRequests().antMatchers("/login", "/logout").permitAll().anyRequest().authenticated().and()
-				.formLogin().permitAll().and().logout()
+		http.authorizeRequests().antMatchers("/public/**", "/resources/**").permitAll().anyRequest().authenticated()
+				.and().formLogin().loginPage("/login").usernameParameter("email").passwordParameter("password")
+				.permitAll().and().logout().logoutSuccessUrl("/login?logout").permitAll()
 				.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
 				.deleteCookies("JSESSIONID").invalidateHttpSession(true).and().csrf().disable();
 

@@ -10,14 +10,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.example.simplemvc.annotation.ExcludeFromTests;
 
-//@Configuration
-//@EnableTransactionManagement
-//@ExcludeFromTests
+@Configuration
+@EnableTransactionManagement
+@ExcludeFromTests
 public class DatabaseConfiguration {
 
 	private static final String SCHEMA_SPLIT_REGEX = ",";
@@ -97,15 +98,14 @@ public class DatabaseConfiguration {
 
 		return sessionFactoryBean;
 	}
-	//
-	// @Bean
-	// public HibernateTransactionManager transactionManager() {
-	// HibernateTransactionManager transactionManager = new
-	// HibernateTransactionManager();
-	// transactionManager.setSessionFactory(sessionFactory().getObject());
-	// return transactionManager;
-	// }
-	//
+
+	@Bean
+	public HibernateTransactionManager transactionManager() {
+		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+		transactionManager.setSessionFactory(sessionFactory().getObject());
+		return transactionManager;
+	}
+
 	// @Bean(initMethod = "migrate")
 	// public Flyway flyway() {
 	//

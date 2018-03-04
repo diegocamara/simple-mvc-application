@@ -1,14 +1,18 @@
 package com.example.simplemvc.configuration;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -55,20 +59,20 @@ public class DatabaseConfiguration {
 
 	// Flyway configuration
 
-	// @Value("${migration.clean_database}")
-	// private boolean MIGRATION_CLEAN_DATABASE;
-	//
-	// @Value("${migration.enabled}")
-	// private boolean MIGRATION_ENABLED;
-	//
-	// @Value("${migration.try_repair_on_failure}")
-	// private boolean MIGRATION_TRY_REPAIR_ON_FAILURE;
-	//
-	// @Value("${migration.schemas}")
-	// private String MIGRATION_SCHEMAS;
-	//
-	// @Value("${migration.locations}")
-	// private String MIGRATION_LOCATIONS;
+	@Value("${migration.clean_database}")
+	private boolean MIGRATION_CLEAN_DATABASE;
+
+	@Value("${migration.enabled}")
+	private boolean MIGRATION_ENABLED;
+
+	@Value("${migration.try_repair_on_failure}")
+	private boolean MIGRATION_TRY_REPAIR_ON_FAILURE;
+
+	@Value("${migration.schemas}")
+	private String MIGRATION_SCHEMAS;
+
+	@Value("${migration.locations}")
+	private String MIGRATION_LOCATIONS;
 
 	private static final Logger LOGGER = LogManager.getLogger(DatabaseConfiguration.class);
 
@@ -83,7 +87,7 @@ public class DatabaseConfiguration {
 	}
 
 	@Bean
-	// @DependsOn("flyway")
+	@DependsOn("flyway")
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
 		sessionFactoryBean.setDataSource(dataSource());
@@ -106,44 +110,43 @@ public class DatabaseConfiguration {
 		return transactionManager;
 	}
 
-	// @Bean(initMethod = "migrate")
-	// public Flyway flyway() {
-	//
-	// if (MIGRATION_ENABLED) {
-	//
-	// final Flyway flyway = new Flyway();
-	// flyway.setDataSource(this.dataSource());
-	// flyway.setLocations(MIGRATION_LOCATIONS);
-	//
-	// String[] schemas = (String[])
-	// Arrays.stream(MIGRATION_SCHEMAS.split(SCHEMA_SPLIT_REGEX))
-	// .map(schema -> schema.trim()).toArray(String[]::new);
-	//
-	// flyway.setSchemas(schemas);
-	//
-	// LOGGER.info("Initializing Flyway...");
-	//
-	// if (MIGRATION_CLEAN_DATABASE) {
-	// LOGGER.info("Clean database...");
-	// flyway.clean();
-	// }
-	//
-	// try {
-	// LOGGER.info("Starting database migration");
-	// flyway.migrate();
-	// } catch (FlywayException e) {
-	// LOGGER.info("The migration failed: " + e.getMessage());
-	// e.printStackTrace();
-	// if (MIGRATION_TRY_REPAIR_ON_FAILURE) {
-	// LOGGER.info("Trying repair");
-	// flyway.clean();
-	// flyway.migrate();
-	// }
-	// }
-	// LOGGER.info("Done.");
-	// return flyway;
-	// }
-	// return null;
-	// }
+	@Bean(initMethod = "migrate")
+	public Flyway flyway() {
+
+		if (MIGRATION_ENABLED) {
+
+			final Flyway flyway = new Flyway();
+			flyway.setDataSource(this.dataSource());
+			flyway.setLocations(MIGRATION_LOCATIONS);
+
+			String[] schemas = (String[]) Arrays.stream(MIGRATION_SCHEMAS.split(SCHEMA_SPLIT_REGEX))
+					.map(schema -> schema.trim()).toArray(String[]::new);
+
+			flyway.setSchemas(schemas);
+
+			LOGGER.info("Initializing Flyway...");
+
+			if (MIGRATION_CLEAN_DATABASE) {
+				LOGGER.info("Clean database...");
+				flyway.clean();
+			}
+
+			try {
+				LOGGER.info("Starting database migration");
+				flyway.migrate();
+			} catch (FlywayException e) {
+				LOGGER.info("The migration failed: " + e.getMessage());
+				e.printStackTrace();
+				if (MIGRATION_TRY_REPAIR_ON_FAILURE) {
+					LOGGER.info("Trying repair");
+					flyway.clean();
+					flyway.migrate();
+				}
+			}
+			LOGGER.info("Done.");
+			return flyway;
+		}
+		return null;
+	}
 
 }
